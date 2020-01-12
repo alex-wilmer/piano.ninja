@@ -1,0 +1,15 @@
+{
+  "name": "piano-practice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "dependencies": {
+    "@tonaljs/modules": "^3.4.2",
+    "parcel-bundler": "^1.12.4",
+    "vexflow": "^1.2.89",
+    "webmidi": "^2.5.1"
+  }
+}
