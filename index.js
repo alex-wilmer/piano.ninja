@@ -1,7 +1,10 @@
 import './index.css'
 import WebMidi from 'webmidi'
-// import { chord } from '@tonaljs/chord'
+import { entries } from '@tonaljs/chord-dictionary'
+import { chord } from '@tonaljs/chord'
+import { enharmonic } from '@tonaljs/note'
 import Vex from 'vexflow'
+import { sample } from 'lodash'
 
 let VF = Vex.Flow
 
@@ -15,28 +18,56 @@ let stave = new VF.Stave(10, 40, 400)
 stave.addClef('treble').addTimeSignature('4/4')
 stave.setContext(context).draw()
 
-var tickContext = new VF.TickContext()
+let tickContext = new VF.TickContext()
 
-let notes = [['c/4'], ['e/4'], ['g/4'], ['b/4']]
+let css = entries()
+  .map(chordType => chordType.name)
+  .filter(chordType => chordType)
 
-notes = notes.map(n => {
-  let note = new VF.StaveNote({ clef: 'treble', keys: n, duration: 'q' })
+let chordData = css.map(c => {
+  return chord('C ' + c)
+})
+
+let rawNotes = sample(chordData).notes
+let noteParts = rawNotes.map(x => {
+  // TODO: handle double sharp / flat
+  let [letter, acc] = x.split('')
+
+  return {
+    letter,
+    acc,
+    octave: 4
+  }
+})
+
+let notesWithOctave = rawNotes.map(x => x + 4)
+
+let staveNotes = noteParts.map(n => {
+  let note = new VF.StaveNote({
+    clef: 'treble',
+    keys: [n.letter + '/' + n.octave],
+    duration: 'q'
+  })
     .setContext(context)
     .setStave(stave)
+
+  if (n.acc) {
+    note.addAccidental(0, new VF.Accidental(n.acc))
+  }
 
   tickContext.addTickable(note)
 
   return note
 })
 
-const group = context.openGroup() // create an SVG group element
-VF.Formatter.FormatAndDraw(context, stave, notes)
-context.closeGroup() // and close the group
+const group = context.openGroup()
+VF.Formatter.FormatAndDraw(context, stave, staveNotes)
+context.closeGroup()
 
 let child = 0
 let children = group.querySelectorAll('.vf-stavenote')
 
-document.body.onclick = () => {
+let colorNote = () => {
   children[child].classList.add('test')
   child++
 }
@@ -46,19 +77,18 @@ WebMidi.enable(err => {
     console.log('WebMidi could not be enabled.', err)
   } else {
     console.log('WebMidi enabled!')
-    console.log(WebMidi.inputs)
     let [input] = WebMidi.inputs
 
     if (input) {
-      input.addListener('pitchbend', 'all', e => {
-        console.log('Pitch value: ' + e.value)
-      })
-
-      // Listen for a 'note on' message on all channels
       input.addListener('noteon', 'all', e => {
-        console.log(
-          "Received 'noteon' message (" + e.note.name + e.note.octave + ').'
-        )
+        let note = e.note.name + e.note.octave
+        if (
+          [notesWithOctave[child], enharmonic(notesWithOctave[child])].includes(
+            note
+          )
+        ) {
+          colorNote()
+        }
       })
     }
   }

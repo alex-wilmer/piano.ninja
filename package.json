@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@tonaljs/modules": "^3.4.2",
+    "lodash": "^4.17.15",
     "parcel-bundler": "^1.12.4",
     "vexflow": "^1.2.89",
     "webmidi": "^2.5.1"
