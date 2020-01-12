@@ -1,4 +1,5 @@
 import './index.css'
+import Tone from 'tone'
 import WebMidi from 'webmidi'
 import { entries } from '@tonaljs/chord-dictionary'
 import { chord } from '@tonaljs/chord'
@@ -28,7 +29,10 @@ let chordData = css.map(c => {
   return chord('C ' + c)
 })
 
-let rawNotes = sample(chordData).notes
+let rawNotes = [...sample(chordData).notes, ...sample(chordData).notes].slice(
+  0,
+  4
+)
 let noteParts = rawNotes.map(x => {
   // TODO: handle double sharp / flat
   let [letter, acc] = x.split('')
@@ -72,6 +76,65 @@ let colorNote = () => {
   child++
 }
 
+var synth = new Tone.PolySynth(6, Tone.Synth, {
+  oscillator: {
+    type: 'sine'
+  }
+}).toMaster()
+
+let countT = document.getElementById('count')
+let count = 4
+
+let hitBtn = document.getElementById('hit')
+let startBtn = document.getElementById('start')
+
+startBtn.onclick = () => {
+  Tone.Transport.start('+1')
+
+  // Tone.Transport.scheduleRepeat(time => {
+  //   console.log(Tone.Transport.position)
+  // }, '16n')
+
+  Tone.Transport.scheduleRepeat(time => {
+    Tone.Draw.schedule(() => {
+      if (count > 0) {
+        countT.innerHTML = count
+        count--
+      } else {
+        countT.innerHTML = ''
+        Tone.Transport.stop()
+      }
+    }, time)
+  }, '4n')
+}
+
+let times = [
+  [0, 0, 0],
+  [0, 1, 0],
+  [0, 2, 0],
+  [0, 3, 0]
+]
+
+let tickTimes = times.map(t => {
+  return Tone.Time(t.join(':')).toTicks()
+})
+
+let click = 0
+
+hitBtn.onclick = () => {
+  if (!times[click]) return
+  let tick = Tone.Transport.getTicksAtTime()
+  let ttick = tickTimes[click]
+
+  let delta = tick - ttick
+
+  if (delta < 0) console.log('early')
+  else if (delta > 0) console.log('late')
+  else console.log('perfect')
+
+  click++
+}
+
 WebMidi.enable(err => {
   if (err) {
     console.log('WebMidi could not be enabled.', err)
@@ -82,6 +145,8 @@ WebMidi.enable(err => {
     if (input) {
       input.addListener('noteon', 'all', e => {
         let note = e.note.name + e.note.octave
+        synth.triggerAttack([note])
+
         if (
           [notesWithOctave[child], enharmonic(notesWithOctave[child])].includes(
             note
@@ -89,6 +154,11 @@ WebMidi.enable(err => {
         ) {
           colorNote()
         }
+      })
+
+      input.addListener('noteoff', 'all', e => {
+        let note = e.note.name + e.note.octave
+        synth.triggerRelease([note])
       })
     }
   }
