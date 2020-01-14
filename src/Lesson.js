@@ -84,7 +84,7 @@ export default () => {
       return note
     })
 
-    let staveNotes2 = cmaj.slice(3).map(n => {
+    let staveNotes2 = cmaj.slice(4).map(n => {
       let note = new VF.StaveNote({
         clef: 'treble',
         keys: [n.letter + '/' + n.octave],
@@ -99,6 +99,14 @@ export default () => {
 
       return note
     })
+
+    let top = new VF.StaveNote({
+      clef: 'treble',
+      keys: ['c' + '/' + 5],
+      duration: 'q'
+    })
+    tickContext.addTickable(top)
+    staveNotes2.push(top)
 
     const group = context.openGroup()
 
