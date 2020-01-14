@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { render } from 'react-dom'
 import { Router, Link } from '@reach/router'
 import { Flex } from 'rebass'
-import { StoreProvider, createStore, useStoreState, action, useStoreActions } from 'easy-peasy'
+import { StoreProvider, createStore, action, useStoreActions } from 'easy-peasy'
 import WebMidi from 'webmidi'
 import L from './Lesson'
+import './index.css'
 
 let webmidiModel = {
   input: null,
@@ -19,11 +20,9 @@ let storeModel = {
 
 const store = createStore(storeModel)
 
-import './index.css'
-
 let Header = () => (
   <Flex justifyContent="center">
-    <span className="title">piano.ninja</span>
+    <Link to="/"><span className="title">piano.ninja</span></Link>
   </Flex>
 )
 
