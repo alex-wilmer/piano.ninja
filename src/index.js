@@ -6,9 +6,16 @@ import { StoreProvider, createStore, action, useStoreActions } from 'easy-peasy'
 import WebMidi from 'webmidi'
 import L from './Lesson'
 import './index.css'
-
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
+import Tone from 'tone'
+import { midiToNoteName } from '@tonaljs/midi'
+
+let synth = new Tone.PolySynth(6, Tone.Synth, {
+  oscillator: {
+    type: 'sine'
+  }
+}).toMaster()
 
 let webmidiModel = {
   input: null,
@@ -86,9 +93,17 @@ render(
         noteRange={{ first: firstNote, last: lastNote }}
         playNote={(midiNumber) => {
           // Play a given note - see notes below
+
+          // synth.triggerAttack(['C#4'])
+          synth.triggerAttack([midiToNoteName(midiNumber)])
+          console.log('on', midiNumber)
         }}
         stopNote={(midiNumber) => {
+          console.log('off', midiNumber)
           // Stop playing a given note - see notes below
+          // synth.triggerRelease(['C#4'])
+          synth.triggerRelease([midiToNoteName(midiNumber)])
+          // synth.triggerRelease([midiNumber])
         }}
         width={window.innerWidth}
         keyboardShortcuts={keyboardShortcuts}

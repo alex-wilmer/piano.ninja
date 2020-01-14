@@ -13,12 +13,6 @@ import { Flex } from 'rebass'
 let cmaj = scale('c4 major').notes.map(splitNoteString)
 let rawcount = 0
 
-let synth = new Tone.PolySynth(6, Tone.Synth, {
-  oscillator: {
-    type: 'sine'
-  }
-}).toMaster()
-
 export default () => {
   let [listening, setListening] = useState(false)
   let [playing, setPlaying] = useState(false)
@@ -36,7 +30,7 @@ export default () => {
 
     let barWidth = 400
     let bars = 2
-    let xPos = (window.innerWidth / 2) - ((barWidth * 2) / 2)
+    let xPos = (window.innerWidth / 2) - ((barWidth * bars) / 2)
 
     let stave = new VF.Stave(xPos, 0, barWidth)
     stave.addClef('treble')
@@ -224,7 +218,7 @@ export default () => {
       let note = scaleWithOctave[rawcount]
       rawcount++
       // console.log
-      if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
+      // if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
       Tone.Draw.schedule(() => {
         setCount(s => s + 1)
       }, time)
