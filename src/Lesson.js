@@ -20,8 +20,9 @@ let synth = new Tone.PolySynth(6, Tone.Synth, {
 }).toMaster()
 
 export default () => {
+  let [listening, setListening] = useState(false)
   let [playing, setPlaying] = useState(false)
-  let [count, setCount] = useState(0)
+  let [count, setCount] = useState(-1)
   let webmidi = useStoreState(state => state.webmidi)
 
   useEffect(() => {
@@ -208,6 +209,21 @@ export default () => {
       let note = cmaj[rawcount]
       rawcount++
       // console.log
+      Tone.Draw.schedule(() => {
+        setCount(s => s + 1)
+      }, time)
+    }, '4n')
+  }
+
+  let scaleWithOctave = [...cmaj, { ...cmaj[0], octave: 5 }]
+
+  let listen = () => {
+    setListening(true)
+    Tone.Transport.start('+1')
+    Tone.Transport.scheduleRepeat(time => {
+      let note = scaleWithOctave[rawcount]
+      rawcount++
+      // console.log
       if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
       Tone.Draw.schedule(() => {
         setCount(s => s + 1)
@@ -219,9 +235,12 @@ export default () => {
     <>
       <div id="lessonRoot" />
       <Flex justifyContent="center" alignItems="center" flexDirection="column">
-        <div style={{ visibility: count ? 'visible' : 'hidden' }}>{(count % 4) + 1}</div>
+        <div>{!playing && !listening ? 'select start or listen' : (count === -1 ? 'get ready' : (count % 4) + 1)}</div>
         <button
-          style={{ visibility: !playing ? 'visible' : 'hidden' }}
+          style={{ visibility: !playing && !listening ? 'visible' : 'hidden' }}
+          onClick={listen}>listen</button>
+        <button
+          style={{ visibility: !playing && !listening ? 'visible' : 'hidden' }}
           onClick={start}>start</button>
       </Flex>
     </>
