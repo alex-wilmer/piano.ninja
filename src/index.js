@@ -88,26 +88,23 @@ const keyboardShortcuts = KeyboardShortcuts.create({
 render(
   <StoreProvider store={store}>
     <>
-      <App />
-      <Piano
-        noteRange={{ first: firstNote, last: lastNote }}
-        playNote={(midiNumber) => {
-          // Play a given note - see notes below
-
-          // synth.triggerAttack(['C#4'])
-          synth.triggerAttack([midiToNoteName(midiNumber)])
-          console.log('on', midiNumber)
-        }}
-        stopNote={(midiNumber) => {
-          console.log('off', midiNumber)
-          // Stop playing a given note - see notes below
-          // synth.triggerRelease(['C#4'])
-          synth.triggerRelease([midiToNoteName(midiNumber)])
-          // synth.triggerRelease([midiNumber])
-        }}
-        width={window.innerWidth}
-        keyboardShortcuts={keyboardShortcuts}
-      />
+      <Flex flex={1}>
+        <App />
+      </Flex>
+      <Flex>
+        <Piano
+          noteRange={{ first: firstNote, last: lastNote }}
+          playNote={(midiNumber) => {
+            synth.triggerAttack([midiToNoteName(midiNumber)])
+          }}
+          stopNote={(midiNumber) => {
+            synth.triggerRelease([midiToNoteName(midiNumber)])
+          }}
+          width={window.innerWidth}
+          keyWidthToHeight={0.4}
+          keyboardShortcuts={keyboardShortcuts}
+        />
+      </Flex>
     </>
   </StoreProvider>,
   document.getElementById('root')
