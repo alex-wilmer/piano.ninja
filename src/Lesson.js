@@ -19,6 +19,8 @@ export default () => {
   let [count, setCount] = useState(-1)
   let webmidi = useStoreState(state => state.webmidi)
 
+  let synth = useStoreState(state => state.synth)
+
   useEffect(() => {
     let VF = Vex.Flow
 
@@ -218,7 +220,7 @@ export default () => {
       let note = scaleWithOctave[rawcount]
       rawcount++
       // console.log
-      // if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
+      if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
       Tone.Draw.schedule(() => {
         setCount(s => s + 1)
       }, time)

@@ -11,6 +11,11 @@ body {
 .title {
   font-family: "Poppins", sans-serif;
   font-size: 34px;
+  color: #444;
+}
+
+.link-title {
+  text-decoration: none !important;
 }
 
 .scroll {

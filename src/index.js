@@ -26,13 +26,14 @@ let webmidiModel = {
 
 let storeModel = {
   webmidi: webmidiModel,
+  synth,
 };
 
 const store = createStore(storeModel)
 
 let Header = () => (
-  <Flex justifyContent="center">
-    <Link to="/"><span className="title">piano.ninja</span></Link>
+  <Flex>
+    <Link className="link-title" to="/"><span className="title">piano.ninja</span></Link>
   </Flex>
 )
 
@@ -88,7 +89,7 @@ const keyboardShortcuts = KeyboardShortcuts.create({
 render(
   <StoreProvider store={store}>
     <>
-      <Flex flex={1}>
+      <Flex flex={1} flexDirection="column">
         <App />
       </Flex>
       <Flex>
