@@ -7,9 +7,14 @@
     "start": "parcel index.html"
   },
   "dependencies": {
+    "@reach/router": "^1.2.1",
     "@tonaljs/modules": "^3.4.2",
+    "easy-peasy": "^3.2.6",
     "lodash": "^4.17.15",
     "parcel-bundler": "^1.12.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "rebass": "^4.0.7",
     "tone": "^13.8.25",
     "vexflow": "^1.2.89",
     "webmidi": "^2.5.1"
@@ -19,6 +24,7 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.17.0",
     "prettier": "^1.19.1"
   }
 }

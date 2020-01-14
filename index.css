@@ -1,3 +1,12 @@
+body {
+  margin: 0;
+}
+
+.title {
+  font-family: "Poppins", sans-serif;
+  font-size: 34px;
+}
+
 .scroll {
   transition: transform 5s linear, opacity 0.5s ease-out;
 }
@@ -14,7 +23,12 @@
   transform: translate(-400px, 2000px);
 }
 
-.test * {
+.missed * {
   stroke: red !important;
   fill: red !important;
+}
+
+.hit * {
+  stroke: green !important;
+  fill: green !important;
 }
