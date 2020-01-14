@@ -11,8 +11,16 @@ import { splitNoteString } from './util/splitNoteString'
 import { Flex } from 'rebass'
 
 let cmaj = scale('c4 major').notes.map(splitNoteString)
+let rawcount = 0
+
+let synth = new Tone.PolySynth(6, Tone.Synth, {
+  oscillator: {
+    type: 'sine'
+  }
+}).toMaster()
 
 export default () => {
+  let [playing, setPlaying] = useState(false)
   let [count, setCount] = useState(0)
   let webmidi = useStoreState(state => state.webmidi)
 
@@ -126,22 +134,22 @@ export default () => {
       child++
     }
 
-    var synth = new Tone.PolySynth(6, Tone.Synth, {
-      oscillator: {
-        type: 'sine'
-      }
-    }).toMaster()
+
 
     // let countT = document.getElementById('count')
-    let count = 4
+    // let count = 4
 
     // let hitBtn = document.getElementById('hit')
 
     let times = [
-      [0, 0, 0],
-      [0, 1, 0],
-      [0, 2, 0],
-      [0, 3, 0]
+      [1, 0, 0],
+      [1, 1, 0],
+      [1, 2, 0],
+      [1, 3, 0],
+      [2, 0, 0],
+      [2, 1, 0],
+      [2, 2, 0],
+      [2, 3, 0],
     ]
 
     let tickTimes = times.map(t => {
@@ -194,8 +202,13 @@ export default () => {
   }, [webmidi])
 
   let start = () => {
+    setPlaying(true)
     Tone.Transport.start('+1')
     Tone.Transport.scheduleRepeat(time => {
+      let note = cmaj[rawcount]
+      rawcount++
+      // console.log
+      if (note) synth.triggerAttackRelease(note.letter + note.octave, 0.5, time)
       Tone.Draw.schedule(() => {
         setCount(s => s + 1)
       }, time)
@@ -206,8 +219,10 @@ export default () => {
     <>
       <div id="lessonRoot" />
       <Flex justifyContent="center" alignItems="center" flexDirection="column">
-        <div style={{ visibility: count ? 'visible' : 'hidden' }}>{count}</div>
-        <button onClick={start}>start</button>
+        <div style={{ visibility: count ? 'visible' : 'hidden' }}>{(count % 4) + 1}</div>
+        <button
+          style={{ visibility: !playing ? 'visible' : 'hidden' }}
+          onClick={start}>start</button>
       </Flex>
     </>
   )
