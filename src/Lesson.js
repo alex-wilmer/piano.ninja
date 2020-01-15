@@ -41,7 +41,6 @@ export default () => {
     stave.setContext(context).draw()
 
     let stave2 = new VF.Stave(xPos + barWidth, 0, barWidth)
-    // stave2.setEndBarType(Vex.Flow.Barline.type.SINGLE);
     stave2.setContext(context).draw()
 
     let tickContext = new VF.TickContext()
@@ -130,13 +129,6 @@ export default () => {
       children[child].classList.add('hit')
       child++
     }
-
-
-
-    // let countT = document.getElementById('count')
-    // let count = 4
-
-    // let hitBtn = document.getElementById('hit')
 
     let times = [
       [1, 0, 0],
